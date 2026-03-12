@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zakat Calculator</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💰 Zakat Calculator Pro</h1>
+            <p class="subtitle">Calculate your annual Zakat obligation</p>
+        </header>
+
+        <div class="controls">
+            <div class="currency-selector">
+                <label for="currency">Currency:</label>
+                <select id="currency">
+                    <option>INR</option>
+                    <option>USD</option>
+                    <option>AED</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" onclick="getMetalPrices()">📊 Fetch Live Gold/Silver Price</button>
+        </div>
+
+        <div class="columns">
+            <div class="column">
+                <h3>💎 Assets</h3>
+                
+                <div class="input-group">
+                    <label for="goldWeight">Gold Weight (g)</label>
+                    <input type="number" id="goldWeight" placeholder="0" oninput="calc()">
+                </div>
+
+                <div class="input-group">
+                    <label for="goldPrice">Gold Price per gram</label>
+                    <input type="number" id="goldPrice" placeholder="0" oninput="calc()">
+                </div>
+
+                <div class="input-group">
+                    <label for="silverWeight">Silver Weight (g)</label>
+                    <input type="number" id="silverWeight" placeholder="0" oninput="calc()">
+                </div>
+
+                <div class="input-group">
+                    <label for="silverPrice">Silver Price per gram</label>
+                    <input type="number" id="silverPrice" placeholder="0" oninput="calc()">
+                </div>
+
+                <div class="input-group">
+                    <label for="cash">Cash</label>
+                    <input type="number" id="cash" placeholder="0" oninput="calc()">
+                </div>
+
+                <div class="input-group">
+                    <label for="bank">Bank Balance</label>
+                    <input type="number" id="bank" placeholder="0" oninput="calc()">
+                </div>
+
+                <div class="input-group">
+                    <label for="loanGiven">Loan Given</label>
+                    <input type="number" id="loanGiven" placeholder="0" oninput="calc()">
+                </div>
+
+                <div class="input-group">
+                    <label for="business">Business Inventory</label>
+                    <input type="number" id="business" placeholder="0" oninput="calc()">
+                </div>
+
+                <div class="input-group">
+                    <label for="property">Property for Sale</label>
+                    <input type="number" id="property" placeholder="0" oninput="calc()">
+                </div>
+
+                <div class="input-group">
+                    <label for="invest">Investments</label>
+                    <input type="number" id="invest" placeholder="0" oninput="calc()">
+                </div>
+            </div>
+
+            <div class="column">
+                <h3>💳 Liabilities</h3>
+
+                <div class="input-group">
+                    <label for="loans">Loans</label>
+                    <input type="number" id="loans" placeholder="0" oninput="calc()">
+                </div>
+
+                <div class="input-group">
+                    <label for="mahr">Unpaid Mahr</label>
+                    <input type="number" id="mahr" placeholder="0" oninput="calc()">
+                </div>
+
+                <div class="input-group">
+                    <label for="electric">Electricity Bill</label>
+                    <input type="number" id="electric" placeholder="0" oninput="calc()">
+                </div>
+
+                <div class="input-group">
+                    <label for="gas">Gas / Water Bill</label>
+                    <input type="number" id="gas" placeholder="0" oninput="calc()">
+                </div>
+
+                <div class="input-group">
+                    <label for="phone">Phone / Internet</label>
+                    <input type="number" id="phone" placeholder="0" oninput="calc()">
+                </div>
+
+                <div class="input-group">
+                    <label for="rent">Rent</label>
+                    <input type="number" id="rent" placeholder="0" oninput="calc()">
+                </div>
+
+                <div class="input-group">
+                    <label for="salary">Salaries Pending</label>
+                    <input type="number" id="salary" placeholder="0" oninput="calc()">
+                </div>
+
+                <div class="input-group">
+                    <label for="other">Other Debts</label>
+                    <input type="number" id="other" placeholder="0" oninput="calc()">
+                </div>
+            </div>
+        </div>
+
+        <section class="results">
+            <div class="result-card">
+                <h3>Summary</h3>
+                <div class="result-item">
+                    <span class="label">Total Assets:</span>
+                    <span class="value" id="assets">0.00</span>
+                </div>
+                <div class="result-item">
+                    <span class="label">Total Liabilities:</span>
+                    <span class="value" id="liabilities">0.00</span>
+                </div>
+                <div class="result-item">
+                    <span class="label">Net Wealth:</span>
+                    <span class="value" id="net">0.00</span>
+                </div>
+                <div class="result-item">
+                    <span class="label">Nisab Status:</span>
+                    <span class="value" id="nisab">Enter values</span>
+                </div>
+            </div>
+
+            <div class="result-card zakat-card">
+                <h3>Zakat Payable</h3>
+                <div class="zakat-amount" id="zakat">0.00</div>
+                <p class="zakat-note">2.5% of Net Wealth</p>
+            </div>
+        </section>
+
+        <div class="actions">
+            <button class="btn btn-success" onclick="downloadPDF()">📥 Download Zakat Report</button>
+            <button class="btn btn-secondary" onclick="location.reload()">🔄 Reset</button>
+        </div>
+
+        <footer>
+            <p>© 2026 Zakat Calculator Pro | Made with ❤️</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
