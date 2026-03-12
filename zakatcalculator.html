@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Zakat Calculator Pro</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+
+body{
+font-family:Arial;
+background:#eef2f5;
+padding:20px;
+}
+
+.container{
+max-width:950px;
+margin:auto;
+background:white;
+padding:25px;
+border-radius:10px;
+}
+
+.columns{
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+}
+
+.column{
+flex:1;
+background:#fafafa;
+padding:15px;
+border-radius:8px;
+}
+
+input{
+width:100%;
+padding:8px;
+margin:6px 0 12px;
+}
+
+.result{
+margin-top:20px;
+background:#e8f5e9;
+padding:15px;
+border-radius:8px;
+}
+
+.zakat{
+font-size:22px;
+color:green;
+font-weight:bold;
+}
+
+button{
+padding:10px 15px;
+margin-top:10px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Zakat Calculator</h1>
+
+Currency
+<select id="currency">
+<option>INR</option>
+<option>USD</option>
+<option>AED</option>
+</select>
+
+<button onclick="getMetalPrices()">Fetch Live Gold/Silver Price</button>
+
+<div class="columns">
+
+<div class="column">
+
+<h3>Assets</h3>
+
+Gold Weight (g)
+<input type="number" id="goldWeight" oninput="calc()">
+
+Gold Price per gram
+<input type="number" id="goldPrice" oninput="calc()">
+
+Silver Weight (g)
+<input type="number" id="silverWeight" oninput="calc()">
+
+Silver Price per gram
+<input type="number" id="silverPrice" oninput="calc()">
+
+Cash
+<input type="number" id="cash" oninput="calc()">
+
+Bank Balance
+<input type="number" id="bank" oninput="calc()">
+
+Loan Given
+<input type="number" id="loanGiven" oninput="calc()">
+
+Business Inventory
+<input type="number" id="business" oninput="calc()">
+
+Property for Sale
+<input type="number" id="property" oninput="calc()">
+
+Investments
+<input type="number" id="invest" oninput="calc()">
+
+</div>
+
+<div class="column">
+
+<h3>Liabilities</h3>
+
+Loans
+<input type="number" id="loans" oninput="calc()">
+
+Unpaid Mahr
+<input type="number" id="mahr" oninput="calc()">
+
+Electricity Bill
+<input type="number" id="electric" oninput="calc()">
+
+Gas / Water Bill
+<input type="number" id="gas" oninput="calc()">
+
+Phone / Internet
+<input type="number" id="phone" oninput="calc()">
+
+Rent
+<input type="number" id="rent" oninput="calc()">
+
+Salaries Pending
+<input type="number" id="salary" oninput="calc()">
+
+Other Debts
+<input type="number" id="other" oninput="calc()">
+
+</div>
+
+</div>
+
+<div class="result">
+
+<p>Total Assets: <span id="assets">0</span></p>
+<p>Total Liabilities: <span id="liabilities">0</span></p>
+<p>Net Wealth: <span id="net">0</span></p>
+
+<p>Nisab Status: <span id="nisab">Enter values</span></p>
+
+<p class="zakat">Zakat Payable: <span id="zakat">0</span></p>
+
+<button onclick="downloadPDF()">Download Zakat Report</button>
+<button onclick="location.reload()">Reset</button>
+
+</div>
+
+</div>
+
+<script>
+
+function val(id){
+return Number(document.getElementById(id).value)||0
+}
+
+function calc(){
+
+let gold=val("goldWeight")*val("goldPrice")
+let silver=val("silverWeight")*val("silverPrice")
+
+let assets=
+gold+
+silver+
+val("cash")+
+val("bank")+
+val("loanGiven")+
+val("business")+
+val("property")+
+val("invest")
+
+let liabilities=
+val("loans")+
+val("mahr")+
+val("electric")+
+val("gas")+
+val("phone")+
+val("rent")+
+val("salary")+
+val("other")
+
+let net=assets-liabilities
+let zakat=net>0?net/40:0
+
+let silverNisab=val("silverPrice")*612
+
+let status="Below Nisab"
+
+if(net>=silverNisab && silverNisab>0){
+status="Above Nisab (Zakat Required)"
+}
+
+document.getElementById("assets").innerText=assets.toFixed(2)
+document.getElementById("liabilities").innerText=liabilities.toFixed(2)
+document.getElementById("net").innerText=net.toFixed(2)
+document.getElementById("zakat").innerText=zakat.toFixed(2)
+document.getElementById("nisab").innerText=status
+
+}
+
+async function getMetalPrices(){
+
+try{
+
+let response=await fetch("https://api.metals.live/v1/spot")
+
+let data=await response.json()
+
+let gold=data.find(m=>m.gold)
+let silver=data.find(m=>m.silver)
+
+document.getElementById("goldPrice").value=(gold.gold/31.1).toFixed(2)
+document.getElementById("silverPrice").value=(silver.silver/31.1).toFixed(2)
+
+calc()
+
+}catch(e){
+
+alert("Could not fetch live prices")
+
+}
+
+}
+
+function downloadPDF(){
+
+const { jsPDF } = window.jspdf
+let doc=new jsPDF()
+
+doc.text("Zakat Report",20,20)
+doc.text("Total Assets: "+assets.innerText,20,40)
+doc.text("Total Liabilities: "+liabilities.innerText,20,50)
+doc.text("Net Wealth: "+net.innerText,20,60)
+doc.text("Zakat Payable: "+zakat.innerText,20,70)
+
+doc.save("zakat-report.pdf")
+
+}
+
+</script>
+
+</body>
+</html>
